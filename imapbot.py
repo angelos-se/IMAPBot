@@ -15,7 +15,7 @@ def main():
     print("main")
     conn = sqlite3.connect('imapbot.sqlite')
     create_database(conn)
-    imap("imap.gmail.com", 993, config.test['email'], config.test['password'], "INBOX")
+    imap("imap.gmail.com", 993, config.temp['email'], config.temp['password'], "INBOX")
 
 
 def create_database(conn):
