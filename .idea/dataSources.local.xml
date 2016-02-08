@@ -1,10 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="dataSourceStorageLocal">
-    <data-source name="Sqlite (Xerial) - imapbot.sqlite" uuid="bd21c3df-be7f-41ec-9f01-8cd3890620a7">
-      <secret-storage>master_key</secret-storage>
-      <auth-required>false</auth-required>
-      <schema-pattern>*</schema-pattern>
-    </data-source>
-  </component>
-</project>
+<project version="4" />
