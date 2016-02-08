@@ -1,0 +1,9 @@
+telegram = dict(
+    bot_token="111111111:AAAAAAAAAAAAAAAApksb4Z9lM", # register via @botmaster
+    chat_id="222111111" # your telegram account chat_id
+)
+temp = dict(
+ email="youremail@gmail.com",
+ password="password"
+)
+interval = 2 #in seconds

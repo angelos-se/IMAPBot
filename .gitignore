@@ -1,6 +1,6 @@
 # Create your own config...!
 config.py
-
+config.json
 # And use your own database!
 imapbot.sqlite
 
