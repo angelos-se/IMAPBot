@@ -6,7 +6,6 @@ import datetime
 import config
 import requests
 import sys
-import sqlite3
 import json
 import time
 import traceback
@@ -17,8 +16,6 @@ TELEGRAM_API_BASE = "https://api.telegram.org/bot" + config.telegram['bot_token'
 ftime = "%Y%m%d%H%M%S%f"
 def main():
     print("main")
-#    conn = sqlite3.connect('imapbot.sqlite')
-#    create_database(conn)
     cfgfile = dict(fromdate=datetime.datetime(1980, 1, 1).strftime(ftime))
     fromdate = datetime.datetime.min
     try:
@@ -34,17 +31,6 @@ def main():
     
 
 
-def create_database(conn):
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS imapbot (
-        email VARCHAR(50),
-        password VARCHAR(50),
-        server VARCHAR(50),
-        port INT,
-        telegram_owner VARCHAR(50),
-        telegram_send VARCHAR(50)
-        )
-    """)
 
 
 def send_message(message):
