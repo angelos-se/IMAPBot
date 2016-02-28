@@ -106,8 +106,8 @@ def imap(host, port, user, password, folder):
         M.logout()
         return
     else:
-        log.info("Mailboxes:")
-        log.info(mailboxes)
+        logger.info("Mailboxes:")
+        logger.info(mailboxes)
 
     rv, data = M.select(folder)
     if rv == 'OK':
