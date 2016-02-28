@@ -6,31 +6,19 @@ import datetime
 import config
 import requests
 import sys
-import json
 import time
 import traceback
 
 
 TELEGRAM_API_BASE = "https://api.telegram.org/bot" + config.telegram['bot_token'] + "/"
 
-ftime = "%Y%m%d%H%M%S%f"
-def main():
-    print("main")
-    cfgfile = dict(fromdate=datetime.datetime(1980, 1, 1).strftime(ftime))
-    fromdate = datetime.datetime.min
-    try:
-        with open("config.json","rt") as f:
-            cfgfile = json.load(f)
-        fromdate = datetime.datetime.strptime(cfgfile["fromdate"], ftime)
-    except BaseException as e:
-        print ("error while loading config.json:\n%r" % e)
-    lastdate = imap("imap.gmail.com", 993, config.temp['email'], config.temp['password'], "INBOX", fromdate)
-    cfgfile["fromdate"] = lastdate.strftime(ftime)
-    with open("config.json", "wt") as f:
-        f.write(json.dumps(cfgfile))
     
 
 
+def main():
+    logger.info("Starting the bot.")
+    folder = "INBOX"
+    imap(config.email['host'], config.email['port'], config.email['email'], config.email['password'], folder)
 
 
 def send_message(message):
@@ -43,13 +31,13 @@ def send_message(message):
     return
 
 
-def process_mailbox(M, fromdate):
+def process_mailbox(M):
     """
     Do something with emails messages in the folder.
     For the sake of this example, print some headers.
     """
 
-    rv, data = M.search(None, "ALL")
+    rv, data = M.search(None, config.email['search'])
     if rv != 'OK':
         print("No messages found!")
         return
@@ -60,22 +48,14 @@ def process_mailbox(M, fromdate):
             print("ERROR getting message", num)
             return
 
-        msg = email.message_from_bytes(data[0][1])
-        hdr = email.header.make_header(email.header.decode_header(msg['Subject']))
-        subject = str(hdr)
-        #print('Message %s: %s' % (num, subject))
-        #print('Raw Date:', msg['Date'])
-        # Now convert to local date-time
-        date_tuple = email.utils.parsedate_tz(msg['Date'])
-        local_date = None
-        if date_tuple:
-            local_date = datetime.datetime.fromtimestamp(
-                    email.utils.mktime_tz(date_tuple))
-            #print("Local Date:", local_date.strftime("%a, %d %b %Y %H:%M:%S"))
-        if not local_date or local_date > fromdate:
-            body = decode_body(msg)
-            print(body)
-            send_message(subject+"\n"+str(body))
+        msg = email.message_from_string(data[0][1])
+
+        content = decode_body(msg)
+        if len(content) > config.email['maxLen']:
+            content = content[:config.email['maxLen']] + "... _trimmed_"
+        emailText = "*From:* " + msg['From'] +"\n*Subject:* " + msg['Subject'] + "\n==========\n" + content
+
+        send_message(emailText)
 
 def decode_body(msg):
 
@@ -106,7 +86,8 @@ def decode_body(msg):
         text = str(msg.get_payload(decode=True), msg.get_content_charset(), 'ignore')
         return text.strip()
         
-def imap(host, port, user, password, folder, fromdate):
+
+def imap(host, port, user, password, folder):
     M = imaplib.IMAP4_SSL(host=host, port=port)
 
     try:
@@ -125,7 +106,7 @@ def imap(host, port, user, password, folder, fromdate):
     rv, data = M.select(folder)
     if rv == 'OK':
         print("Processing mailbox from date %r"%fromdate)
-        process_mailbox(M, fromdate)
+        process_mailbox(M)
         M.close()
     else:
         print("ERROR: Unable to open mailbox ", rv)
