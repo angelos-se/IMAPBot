@@ -10,3 +10,6 @@ email = dict(
 	search = "(UNSEEN)",
 	maxLen = 500,
 )
+chats = dict(
+		targetChatIds = [123,345],
+)

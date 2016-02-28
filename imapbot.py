@@ -26,10 +26,17 @@ def main():
 
 def send_message(message):
     requesturl = TELEGRAM_API_BASE + "sendMessage"
-    payload = {"chat_id": config.telegram['chat_id'], "text": message}
-
-    response = requests.post(requesturl, data=payload)
-    print(response.text)
+    for chatId in config.chats['targetChatIds']:
+        payload = {"parse_mode": "Markdown", "chat_id": chatId, "text": message}
+        response = requests.post(requesturl, data=payload)
+    if response.text.find("error_code") > 0:
+        logger.warning("There was an error during send message: " + response.text)
+        logger.warning("Message is: " + message)
+        msg = "*Error!* Cannot send message. Check the log for details."
+        payload = {"parse_mode": "Markdown", "chat_id": chatId, "text": msg}
+        response = requests.post(requesturl, data=payload)
+        if response.text.find("error_code") > 0:
+            logger.warning("Failception :(")
     return
 
 def process_mailbox(M):
