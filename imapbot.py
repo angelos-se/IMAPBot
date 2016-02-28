@@ -135,11 +135,5 @@ def imap(host, port, user, password, folder, fromdate):
     return datetime.datetime.now()
 
 if __name__ == '__main__':
-    while True:
-        try:
-            main()
-        except BaseException as e:
-            print("FAILURE\n %r"%e)
-            traceback.print_exc(e)
-        print ("Sleeping %r" % config.interval)
-        time.sleep(config.interval)
+    logger.warning("WARN!!")
+    main()
