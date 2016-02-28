@@ -62,6 +62,7 @@ def decode_body(msg):
 
     if msg.is_multipart():
         html = None
+        text = None
         for part in msg.get_payload():
 
             if part.get_content_charset() is None:
