@@ -70,20 +70,18 @@ def decode_body(msg):
                 text = part.get_payload(decode=True)
                 continue
 
-            charset = part.get_content_charset()
-
             if part.get_content_type() == 'text/plain':
-                text = str(part.get_payload(decode=True), str(charset), "ignore")
+                text = part.get_payload(decode=True)
 
             if part.get_content_type() == 'text/html':
-                html = str(part.get_payload(decode=True), str(charset), "ignore")
+                html = part.get_payload(decode=True)
 
         if text is not None:
             return text.strip()
         else:
             return html.strip()
     else:
-        text = str(msg.get_payload(decode=True), msg.get_content_charset(), 'ignore')
+        text = msg.get_payload(decode=True)
         return text.strip()
 
 def imap(host, port, user, password, folder):
