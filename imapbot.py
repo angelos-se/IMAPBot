@@ -26,7 +26,7 @@ def main():
 
 def send_message(message):
     requesturl = TELEGRAM_API_BASE + "sendMessage"
-    for chatId in config.chats['targetChatIds']:
+    for chatId in config.telegram['chat_ids']:
         payload = {"parse_mode": "Markdown", "chat_id": chatId, "text": message}
         response = requests.post(requesturl, data=payload)
     if response.text.find("error_code") > 0:

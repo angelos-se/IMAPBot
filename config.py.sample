@@ -1,9 +1,13 @@
 telegram = dict(
-    bot_token="111111111:AAAAAAAAAAAAAAAApksb4Z9lM", # register via @botmaster
-    chat_id="222111111" # your telegram account chat_id
+	bot_token="",  # register via @botmaster
+	chat_ids = [123,345], # telegram account that will get the emails
 )
-temp = dict(
- email="youremail@gmail.com",
- password="password"
+email = dict(
+	host = "imap.gmail.com",
+	port = "993",
+	email = "MYUSER",
+	password = "SuperSecret",
+	# This is from IMAP, "ALL" is also useful. Check IMAP specs for more info.
+	search = "(UNSEEN)",
+	maxLen = 500,
 )
-interval = 2 #in seconds
