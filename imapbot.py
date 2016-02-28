@@ -120,5 +120,4 @@ def imap(host, port, user, password, folder):
     M.logout()
 
 if __name__ == '__main__':
-    logger.warning("WARN!!")
     main()
