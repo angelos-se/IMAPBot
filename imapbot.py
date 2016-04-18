@@ -9,7 +9,11 @@ import sys
 import time
 import logging
 import traceback
+import re
+import sys
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 TELEGRAM_API_BASE = "https://api.telegram.org/bot" + config.telegram['bot_token'] + "/"
 
@@ -58,38 +62,47 @@ def process_mailbox(M):
 
         msg = email.message_from_string(data[0][1])
 
-        content = decode_body(msg)
+        content, extras = decode_body(msg)
+        extraText = ""
+        if extras:
+            extraText = "\n " + unichr(10133) +" **" + str(len(extras)) + " attachments:**"
+            for (name, cont) in extras:
+                extraText += "\n- " + str(name)
+        # remove markdown which would confuse the parser
+        content = re.sub('[\*_]', '', content)
         if len(content) > config.email['maxLen']:
             content = content[:config.email['maxLen']] + "... _trimmed_"
-        emailText = "*From:* " + msg['From'] +"\n*Subject:* " + msg['Subject'] + "\n==========\n" + content
+        subject, encoding = email.Header.decode_header(msg['Subject'])[0]
+        emailText = "*From:* " + msg['From'] + "\n*Subject:* " + subject + "\n==========\n" + content + " " + extraText
 
         send_message(emailText)
 
 def decode_body(msg):
-
+    extras = []
     if msg.is_multipart():
         html = None
         text = None
-        for part in msg.get_payload():
+        
+        for part in msg.walk():
 
-            if part.get_content_charset() is None:
-                # We cannot know the character set, so return decoded "something"
-                text = part.get_payload(decode=True)
+            if part.get_content_type().startswith('multipart/'):
                 continue
-
-            if part.get_content_type() == 'text/plain':
+            elif part.get_content_type() == 'text/plain':
                 text = part.get_payload(decode=True)
-
-            if part.get_content_type() == 'text/html':
+            elif part.get_content_type() == 'text/html':
                 html = part.get_payload(decode=True)
+            elif part.get_content_charset() is None:
+                # We cannot know the character set, so return decoded "something"
+                extras.append((part.get_filename(), part.get_payload(decode=True)))
 
         if text is not None:
-            return text.strip()
-        else:
-            return html.strip()
+            return (text.strip(), extras)
+        elif html is not None:
+            return (html.strip(), extras)
+        return ("", extras)
     else:
         text = msg.get_payload(decode=True)
-        return text.strip()
+        return (text.strip(), extras)
 
 def imap(host, port, user, password, folder):
     M = imaplib.IMAP4_SSL(host=host, port=port)
