@@ -1,16 +1,19 @@
 #!/usr/bin/python
 
+import sys
 import imaplib
 import email
 import datetime
-import config
 import requests
-import sys
 import time
 import logging
 import traceback
 import re
-import sys
+
+try:
+    config = __import__(sys.argv[1])
+except:
+    import config
 
 reload(sys)
 sys.setdefaultencoding('utf8')
