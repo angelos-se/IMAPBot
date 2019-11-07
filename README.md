@@ -30,6 +30,14 @@ After creating `config.py` and putting in the correct values, the bot can be
 run with the command `./imapbot.py`. It will get the new messages, or the ones
 that satisfy the search criterion, and post them to the specified chats.
 
+Additionally, the version in this fork supports passing config.py as a command 
+line argument eg: `./imapbot.py config_account1.py`, should things fail it falls 
+back to config.py; when using this feature, please note:
+1. Since the file is imported as module, please make sure the file name complies 
+  with Python module name requirements;
+2. If you don't name your file config_<account name>.py, you should look into 
+  adjusting your .gitignore as well.
+
 Currently the bot is not memory resilient, i.e., it finishes its job and exits.
 Therefore, a cron job should be created to regularly check the emails. If you
 clone this repo into `/opt/imapbot/` then you can add the following line to your
