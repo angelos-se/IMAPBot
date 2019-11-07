@@ -35,7 +35,7 @@ line argument eg: `./imapbot.py config_account1.py`, should things fail it falls
 back to config.py; when using this feature, please note:
 1. Since the file is imported as module, please make sure the file name complies 
   with Python module name requirements;
-2. If you don't name your file config_<account name>.py, you should look into 
+2. If you don't name your file `config_<account name>.py`, you should look into 
   adjusting your .gitignore as well.
 
 Currently the bot is not memory resilient, i.e., it finishes its job and exits.
